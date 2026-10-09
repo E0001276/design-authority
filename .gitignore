@@ -1,0 +1,22 @@
+# .NET build artifacts
+bin/
+obj/
+*.user
+*.suo
+packages/
+
+# Local configuration and secrets
+appsettings.*.local.json
+*.secrets.json
+.env
+.env.*
+/App_Data/
+
+# IDE and operating-system files
+.vs/
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.tmp
+*.swp

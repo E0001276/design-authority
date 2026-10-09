@@ -1,0 +1,17 @@
+@model DesignAuthority.Web.ViewModels.Decisions.DecisionViewModel
+@{
+    var options = Model.Options!;
+}
+@Html.AntiForgeryToken()
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="row g-3">
+    <div class="col-md-4"><label asp-for="TramiteId" class="form-label">Trámite</label><select asp-for="TramiteId" class="form-select"><option value="0">Seleccione</option>@foreach(var item in options.Tramites){<option value="@item.Id" selected="@(Model.TramiteId == item.Id ? "selected" : null)">@item.Name</option>}</select><span asp-validation-for="TramiteId" class="text-danger"></span></div>
+    <div class="col-md-4"><label asp-for="SubstageId" class="form-label">Subetapa</label><select asp-for="SubstageId" class="form-select" data-substage-select><option value="0">Seleccione</option>@foreach(var item in options.Substages){<option value="@item.Id" data-tramite-id="@item.ParentId" selected="@(Model.SubstageId == item.Id ? "selected" : null)">@item.Name</option>}</select><span asp-validation-for="SubstageId" class="text-danger"></span></div>
+    <div class="col-md-4"><label asp-for="TechnologyId" class="form-label">Tecnología</label><select asp-for="TechnologyId" class="form-select"><option value="0">Seleccione</option>@foreach(var item in options.Technologies){<option value="@item.Id" selected="@(Model.TechnologyId == item.Id ? "selected" : null)">@item.Name</option>}</select><span asp-validation-for="TechnologyId" class="text-danger"></span></div>
+    <div class="col-md-4"><label asp-for="ResponsibleTeamTechnologyId" class="form-label">Equipo responsable</label><select asp-for="ResponsibleTeamTechnologyId" class="form-select"><option value="0">Seleccione</option>@foreach(var item in options.Teams){<option value="@item.Id" selected="@(Model.ResponsibleTeamTechnologyId == item.Id ? "selected" : null)">@item.Name</option>}</select><span asp-validation-for="ResponsibleTeamTechnologyId" class="text-danger"></span></div>
+    <div class="col-md-4"><label asp-for="RegistrationDate" class="form-label">Fecha de registro</label><input asp-for="RegistrationDate" class="form-control" /></div>
+    <div class="col-md-4"><label asp-for="StatusId" class="form-label">Estatus</label><select asp-for="StatusId" class="form-select"><option value="0">Seleccione</option>@foreach(var item in options.Statuses){<option value="@item.Id" selected="@(Model.StatusId == item.Id ? "selected" : null)">@item.Name</option>}</select><span asp-validation-for="StatusId" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="ProblemDescription" class="form-label">Descripción del problema</label><textarea asp-for="ProblemDescription" class="form-control"></textarea><span asp-validation-for="ProblemDescription" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="SolutionApproach" class="form-label">Enfoque de solución</label><textarea asp-for="SolutionApproach" class="form-control"></textarea><span asp-validation-for="SolutionApproach" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="DecisionText" class="form-label">Decisión</label><textarea asp-for="DecisionText" class="form-control"></textarea><span asp-validation-for="DecisionText" class="text-danger"></span></div>
+</div>

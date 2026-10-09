@@ -1,0 +1,6 @@
+@model DesignAuthority.Web.ViewModels.Agreements.AgreementViewModel
+@{
+    ViewData["Title"] = "Nuevo Acuerdo";
+}
+<h1>Nuevo Acuerdo</h1>
+<form method="post" asp-action="Create"><partial name="_Form" model="Model" /><button class="btn btn-primary mt-3" type="submit">Guardar</button><a class="btn btn-link" asp-action="Index">Cancelar</a></form>

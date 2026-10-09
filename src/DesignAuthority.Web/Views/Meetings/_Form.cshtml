@@ -1,0 +1,35 @@
+@model DesignAuthority.Web.ViewModels.Meetings.MeetingViewModel
+@{
+    var options = Model.Options!;
+}
+@Html.AntiForgeryToken()
+<div asp-validation-summary="ModelOnly" class="text-danger"></div>
+<div class="row g-3">
+    <div class="col-md-4"><label asp-for="TramiteId" class="form-label">Trámite</label><select asp-for="TramiteId" class="form-select"><option value="0">Seleccione</option>@foreach(var item in options.Tramites){<option value="@item.Id" selected="@(Model.TramiteId == item.Id ? "selected" : null)">@item.Name</option>}</select><span asp-validation-for="TramiteId" class="text-danger"></span></div>
+    <div class="col-md-4"><label asp-for="TechnologyId" class="form-label">Tecnología</label><select asp-for="TechnologyId" class="form-select"><option value="0">Seleccione</option>@foreach(var item in options.Technologies){<option value="@item.Id" selected="@(Model.TechnologyId == item.Id ? "selected" : null)">@item.Name</option>}</select><span asp-validation-for="TechnologyId" class="text-danger"></span></div>
+    <div class="col-md-4"><label asp-for="Date" class="form-label">Fecha</label><input asp-for="Date" class="form-control" /><span asp-validation-for="Date" class="text-danger"></span></div>
+    <div class="col-md-4"><label asp-for="Time" class="form-label">Hora</label><input asp-for="Time" class="form-control" type="time" /><span asp-validation-for="Time" class="text-danger"></span></div>
+    <div class="col-md-4"><label asp-for="StatusId" class="form-label">Estatus</label><select asp-for="StatusId" class="form-select"><option value="0">Seleccione</option>@foreach(var item in options.Statuses){<option value="@item.Id" selected="@(Model.StatusId == item.Id ? "selected" : null)">@item.Name</option>}</select><span asp-validation-for="StatusId" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="Subject" class="form-label">Asunto</label><input asp-for="Subject" class="form-control" /><span asp-validation-for="Subject" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="AgreementsSummary" class="form-label">Resumen de Acuerdos</label><textarea asp-for="AgreementsSummary" class="form-control"></textarea><span asp-validation-for="AgreementsSummary" class="text-danger"></span></div>
+    <div class="col-md-6"><label asp-for="CommitmentsSummary" class="form-label">Resumen de compromisos</label><textarea asp-for="CommitmentsSummary" class="form-control"></textarea><span asp-validation-for="CommitmentsSummary" class="text-danger"></span></div>
+    <div class="col-12"><label asp-for="Comments" class="form-label">Comentarios (opcional)</label><textarea asp-for="Comments" class="form-control"></textarea></div>
+    <div class="col-md-6">
+        <fieldset class="border rounded p-3">
+            <legend class="float-none w-auto px-2">Asistentes <span class="text-danger">*</span></legend>
+            @foreach(var person in options.People)
+            {
+                <label class="d-block"><input type="checkbox" name="AttendedPersonIds" value="@person.Id" checked="@Model.AttendedPersonIds.Contains(person.Id)" /> @person.Name</label>
+            }
+        </fieldset>
+    </div>
+    <div class="col-md-6">
+        <fieldset class="border rounded p-3">
+            <legend class="float-none w-auto px-2">No asistieron (opcional)</legend>
+            @foreach(var person in options.People)
+            {
+                <label class="d-block"><input type="checkbox" name="AbsentPersonIds" value="@person.Id" checked="@Model.AbsentPersonIds.Contains(person.Id)" /> @person.Name</label>
+            }
+        </fieldset>
+    </div>
+</div>

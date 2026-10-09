@@ -1,0 +1,25 @@
+@model DesignAuthority.Web.ViewModels.Meetings.MeetingViewModel
+@{
+    ViewData["Title"] = "Editar Reunión";
+}
+<h1>Editar Reunión @ViewData["MeetingId"]</h1>
+@if (TempData["Error"] is string error) { <div class="alert alert-danger">@error</div> }
+@if (TempData["Message"] is string message) { <div class="alert alert-success">@message</div> }
+<form method="post" asp-action="Edit" asp-route-id="@ViewData["MeetingId"]"><partial name="_Form" model="Model" /><button class="btn btn-primary mt-3" type="submit">Guardar cambios</button><a class="btn btn-link" asp-action="Index">Cancelar</a></form>
+<section class="mt-4">
+    <h2>Minuta vigente</h2>
+    @if (ViewData["CurrentMinute"] is DesignAuthority.Application.Abstractions.MeetingMinuteInput currentMinute)
+    {
+        <p>Documento actual: <a asp-action="DownloadMinute" asp-route-id="@ViewData["MeetingId"]">@currentMinute.OriginalFileName</a></p>
+    }
+    else
+    {
+        <p>No hay una Minuta asociada.</p>
+    }
+    <form method="post" asp-action="ReplaceMinute" asp-route-id="@ViewData["MeetingId"]" enctype="multipart/form-data">
+        @Html.AntiForgeryToken()
+        <label class="form-label" for="file">Archivo .docx (máximo 5 MB)</label>
+        <input class="form-control" type="file" id="file" name="file" accept=".docx" />
+        <button class="btn btn-outline-primary mt-2" type="submit">Guardar o reemplazar Minuta</button>
+    </form>
+</section>

@@ -1,0 +1,24 @@
+@model DesignAuthority.Web.ViewModels.FollowUpViewModel
+@using DesignAuthority.Application.Abstractions
+@{
+    ViewData["Title"] = "Seguimientos de Hallazgo";
+    var findingId = ViewData["FindingId"];
+    var history = ViewData["FollowUps"] as IReadOnlyList<FollowUpRow> ?? [];
+}
+<h1>Seguimientos del Hallazgo @findingId</h1>
+<form method="post" asp-action="FollowUps" asp-route-id="@findingId" class="card card-body mb-4">
+    @Html.AntiForgeryToken()
+    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+    <label asp-for="Date" class="form-label">Fecha</label><input asp-for="Date" class="form-control mb-2" />
+    <label asp-for="Observation" class="form-label">Observación</label><textarea asp-for="Observation" class="form-control mb-2"></textarea>
+    <div class="row">
+        <div class="col"><label asp-for="OldStatusId" class="form-label">Estatus anterior (si cambió)</label><select asp-for="OldStatusId" class="form-select"><option value="">Sin cambio</option>@foreach(var status in Model.Statuses){<option value="@status.Id">@status.Name</option>}</select></div>
+        <div class="col"><label asp-for="NewStatusId" class="form-label">Estatus nuevo (si cambió)</label><select asp-for="NewStatusId" class="form-select"><option value="">Sin cambio</option>@foreach(var status in Model.Statuses){<option value="@status.Id">@status.Name</option>}</select></div>
+        <div class="col"><label asp-for="OldCommitmentDate" class="form-label">Fecha compromiso anterior</label><input asp-for="OldCommitmentDate" class="form-control" /></div>
+        <div class="col"><label asp-for="NewCommitmentDate" class="form-label">Fecha compromiso nueva</label><input asp-for="NewCommitmentDate" class="form-control" /></div>
+    </div>
+    <button class="btn btn-primary mt-3" type="submit">Agregar seguimiento</button>
+</form>
+<table class="table table-striped"><thead><tr><th>Fecha</th><th>Usuario</th><th>Observación</th><th>Cambio de estatus</th><th>Cambio de fecha</th></tr></thead><tbody>
+@foreach(var row in history){<tr><td>@row.Date</td><td>@row.UserName</td><td>@row.Observation</td><td>@row.OldStatus → @row.NewStatus</td><td>@row.OldCommitmentDate → @row.NewCommitmentDate</td></tr>}
+</tbody></table>

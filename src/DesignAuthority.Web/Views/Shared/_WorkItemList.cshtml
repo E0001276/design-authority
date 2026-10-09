@@ -1,0 +1,149 @@
+@model DesignAuthority.Web.ViewModels.WorkItemListViewModel
+@{
+    var controller = Model.Kind switch
+    {
+        DesignAuthority.Application.Abstractions.WorkItemKind.Finding => "Findings",
+        DesignAuthority.Application.Abstractions.WorkItemKind.Agreement => "Agreements",
+        DesignAuthority.Application.Abstractions.WorkItemKind.Decision => "Decisions",
+        _ => "Meetings"
+    };
+    var label = Model.Kind switch
+    {
+        DesignAuthority.Application.Abstractions.WorkItemKind.Finding => "Hallazgos",
+        DesignAuthority.Application.Abstractions.WorkItemKind.Agreement => "Acuerdos",
+        DesignAuthority.Application.Abstractions.WorkItemKind.Decision => "Decisiones de Arquitectura",
+        _ => "Reuniones"
+    };
+    var descriptionLabel = Model.Kind == DesignAuthority.Application.Abstractions.WorkItemKind.Meeting
+        ? "Asunto"
+        : Model.Kind == DesignAuthority.Application.Abstractions.WorkItemKind.Decision
+            ? "Descripción del problema"
+            : "Descripción";
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>@label</h1>
+    <a class="btn btn-primary" asp-controller="@controller" asp-action="Create">Agregar</a>
+</div>
+<form method="get" class="row g-2 mb-3">
+    <div class="col-md-5">
+        <label class="form-label" for="search">Buscar</label>
+        <input class="form-control" id="search" name="search" value="@Model.Search" />
+    </div>
+    @if (Model.Kind != DesignAuthority.Application.Abstractions.WorkItemKind.Meeting)
+    {
+    <div class="col-md-3">
+        <label class="form-label" for="technologyId">Tecnología</label>
+        <select class="form-select" id="technologyId" name="technologyId">
+            <option value="">Todas</option>
+            @foreach (var technology in Model.Technologies)
+            {
+                <option value="@technology.Id" selected="@(Model.TechnologyId == technology.Id)">@technology.Name</option>
+            }
+        </select>
+    </div>
+    }
+    @if (Model.Kind != DesignAuthority.Application.Abstractions.WorkItemKind.Meeting)
+    {
+        <div class="col-md-3">
+            <label class="form-label" for="statusId">Estatus</label>
+            <select class="form-select" id="statusId" name="statusId">
+                <option value="">@(Model.Kind is DesignAuthority.Application.Abstractions.WorkItemKind.Finding or DesignAuthority.Application.Abstractions.WorkItemKind.Agreement ? "Pendientes" : "Todos")</option>
+                @foreach (var status in Model.Statuses)
+                {
+                    <option value="@status.Id" selected="@(Model.StatusId == status.Id)">@status.Name</option>
+                }
+            </select>
+        </div>
+    }
+    <div class="col-md-3">
+        <label class="form-label" for="sortBy">Ordenar por</label>
+        <select class="form-select" id="sortBy" name="sortBy">
+            @foreach (var (value, text) in Model.Kind switch
+            {
+                DesignAuthority.Application.Abstractions.WorkItemKind.Finding =>
+                    new[] { ("Id", "Id"), ("Technology", "Tecnología"), ("Status", "Estatus"), ("RegistrationDate", "Fecha de registro") },
+                DesignAuthority.Application.Abstractions.WorkItemKind.Agreement =>
+                    new[] { ("Id", "Id"), ("Technology", "Tecnología"), ("Status", "Estatus"), ("RegistrationDate", "Fecha de registro") },
+                DesignAuthority.Application.Abstractions.WorkItemKind.Decision =>
+                    new[] { ("RegistrationDate", "Fecha de registro") },
+                _ => new[] { ("Id", "Id"), ("Technology", "Tecnología"), ("Subject", "Asunto"), ("Date", "Fecha") }
+            })
+            {
+                <option value="@value" selected="@(Model.SortBy == value ? "selected" : null)">@text</option>
+            }
+        </select>
+    </div>
+    <div class="col-auto align-self-end">
+        <button class="btn btn-outline-primary" type="submit">Aplicar</button>
+        <button class="btn btn-outline-secondary" type="submit" name="descending" value="@(!Model.Descending)">
+            @(Model.Descending ? "Orden descendente" : "Orden ascendente")
+        </button>
+    </div>
+</form>
+<details class="mb-2">
+    <summary>Personalizar columnas</summary>
+    <div class="d-flex gap-3 mt-2">
+        @if (Model.Kind != DesignAuthority.Application.Abstractions.WorkItemKind.Meeting)
+        {
+            <label><input type="checkbox" data-column-toggle="status" checked /> Estatus</label>
+        }
+        <label><input type="checkbox" data-column-toggle="date" checked /> Fecha</label>
+    </div>
+</details>
+<div class="table-responsive">
+    <table class="table table-striped align-middle">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Tecnología</th>
+                <th>@descriptionLabel</th>
+                @if (Model.Kind != DesignAuthority.Application.Abstractions.WorkItemKind.Meeting)
+                {
+                    <th data-column="status">Estatus</th>
+                }
+                <th data-column="date">Fecha</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model.Page.Items)
+        {
+            <tr>
+                <td>@item.Id</td>
+                <td>@item.Technology</td>
+                <td>@item.Description</td>
+                @if (Model.Kind != DesignAuthority.Application.Abstractions.WorkItemKind.Meeting)
+                {
+                    <td data-column="status">@item.Status</td>
+                }
+                <td data-column="date">@item.RegistrationDate.ToString("yyyy-MM-dd")</td>
+                <td class="text-nowrap">
+                    <a class="btn btn-sm btn-outline-secondary" asp-controller="@controller" asp-action="Details" asp-route-id="@item.Id">Consultar</a>
+                    <a class="btn btn-sm btn-outline-primary" asp-controller="@controller" asp-action="Edit" asp-route-id="@item.Id">Editar</a>
+                    @if (Model.Kind is DesignAuthority.Application.Abstractions.WorkItemKind.Finding or DesignAuthority.Application.Abstractions.WorkItemKind.Agreement)
+                    {
+                        <a class="btn btn-sm btn-outline-secondary" asp-controller="@controller" asp-action="FollowUps" asp-route-id="@item.Id">Seguimientos</a>
+                    }
+                    <form class="d-inline" method="post" asp-controller="@controller" asp-action="Delete" asp-route-id="@item.Id">
+                        @Html.AntiForgeryToken()
+                        <button class="btn btn-sm btn-outline-danger" type="submit">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+</div>
+<nav aria-label="Paginación">
+    <ul class="pagination">
+        @for (var pageNumber = 1; pageNumber <= Math.Max(1, (int)Math.Ceiling((double)Model.Page.TotalCount / Model.Page.PageSize)); pageNumber++)
+        {
+            <li class="page-item @(pageNumber == Model.Page.Page ? "active" : "")">
+                <a class="page-link" asp-controller="@controller" asp-action="Index" asp-route-page="@pageNumber"
+                   asp-route-search="@Model.Search" asp-route-technologyId="@Model.TechnologyId"
+                   asp-route-statusId="@Model.StatusId" asp-route-sortBy="@Model.SortBy"
+                   asp-route-descending="@Model.Descending">@pageNumber</a>
+            </li>
+        }
+    </ul>
+</nav>

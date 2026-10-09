@@ -1,0 +1,6 @@
+@model DesignAuthority.Web.ViewModels.Decisions.DecisionViewModel
+@{
+    ViewData["Title"] = "Editar Decisión de Arquitectura";
+}
+<h1>Editar Decisión @ViewData["DecisionId"]</h1>
+<form method="post" asp-action="Edit" asp-route-id="@ViewData["DecisionId"]"><partial name="_Form" model="Model" /><button class="btn btn-primary mt-3" type="submit">Guardar cambios</button><a class="btn btn-link" asp-action="Index">Cancelar</a></form>

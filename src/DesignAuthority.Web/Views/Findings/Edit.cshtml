@@ -1,0 +1,10 @@
+@model DesignAuthority.Web.ViewModels.Findings.FindingViewModel
+@{
+    ViewData["Title"] = "Editar Hallazgo";
+}
+<h1>Editar Hallazgo @ViewData["FindingId"]</h1>
+<form method="post" asp-action="Edit" asp-route-id="@ViewData["FindingId"]">
+    <partial name="_Form" model="Model" />
+    <button class="btn btn-primary" type="submit">Guardar cambios</button>
+    <a class="btn btn-link" asp-action="Index">Cancelar</a>
+</form>

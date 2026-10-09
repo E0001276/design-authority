@@ -1,0 +1,31 @@
+@model DesignAuthority.Web.ViewModels.WorkItemDetailsViewModel
+@{
+    ViewData["Title"] = Model.Title;
+}
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h1>@Model.Title</h1>
+    <div class="d-flex gap-2">
+        <a class="btn btn-primary" asp-controller="@Model.Controller" asp-action="Edit" asp-route-id="@Model.Id">Editar</a>
+        @if (Model.FollowUpsAction is not null)
+        {
+            <a class="btn btn-outline-secondary" asp-controller="@Model.Controller" asp-action="@Model.FollowUpsAction" asp-route-id="@Model.Id">Seguimientos</a>
+        }
+        <a class="btn btn-link" asp-controller="@Model.Controller" asp-action="Index">Volver</a>
+    </div>
+</div>
+<dl class="row">
+    <dt class="col-sm-3">Id</dt>
+    <dd class="col-sm-9">@Model.Id</dd>
+    @foreach (var field in Model.Fields)
+    {
+        <dt class="col-sm-3">@field.Key</dt>
+        <dd class="col-sm-9">@field.Value</dd>
+    }
+    @if (Model.CurrentMinuteFileName is not null)
+    {
+        <dt class="col-sm-3">Minuta vigente</dt>
+        <dd class="col-sm-9">
+            <a asp-controller="@Model.Controller" asp-action="DownloadMinute" asp-route-id="@Model.Id">@Model.CurrentMinuteFileName</a>
+        </dd>
+    }
+</dl>

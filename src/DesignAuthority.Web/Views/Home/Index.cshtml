@@ -1,0 +1,14 @@
+﻿@{
+    ViewData["Title"] = "Seguimiento de arquitectura";
+}
+
+<section class="py-5">
+    <h1>Seguimiento de arquitectura</h1>
+    <p class="lead">Registre y consulte el trabajo de Design Authority.</p>
+    <div class="d-flex flex-wrap gap-2">
+        <a class="btn btn-primary" asp-controller="Findings" asp-action="Index">Hallazgos</a>
+        <a class="btn btn-primary" asp-controller="Agreements" asp-action="Index">Acuerdos</a>
+        <a class="btn btn-primary" asp-controller="Decisions" asp-action="Index">Decisiones de Arquitectura</a>
+        <a class="btn btn-primary" asp-controller="Meetings" asp-action="Index">Reuniones</a>
+    </div>
+</section>

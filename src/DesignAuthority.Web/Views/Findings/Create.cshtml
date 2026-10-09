@@ -1,0 +1,10 @@
+@model DesignAuthority.Web.ViewModels.Findings.FindingViewModel
+@{
+    ViewData["Title"] = "Nuevo Hallazgo";
+}
+<h1>Nuevo Hallazgo</h1>
+<form method="post" asp-action="Create">
+    <partial name="_Form" model="Model" />
+    <button class="btn btn-primary" type="submit">Guardar</button>
+    <a class="btn btn-link" asp-action="Index">Cancelar</a>
+</form>
